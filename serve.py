@@ -8,8 +8,14 @@ class RequestHandler(SimpleHTTPRequestHandler):
         self.path = "index.html"
         return SimpleHTTPRequestHandler.do_GET(self)
     
+    def do_POST(self):
+        content = int(self.headers.get("Content-Length"))
+        body = self.rfile.read(content)
+        print(body)
+        return self.do_GET()
 
-hostName, PORT = "localhost", 8080
+
+hostName, PORT = "localhost", 8082
 handler = RequestHandler
 
 server = TCPServer((hostName, PORT), handler)
