@@ -1,6 +1,7 @@
 from http.server import SimpleHTTPRequestHandler
 from socketserver import TCPServer
 from urllib.parse import parse_qs
+from sqlite3 import connect
 
 from constants import Constants
 
@@ -17,6 +18,12 @@ class RequestHandler(SimpleHTTPRequestHandler):
         postvars = parse_qs(self.rfile.read(length).decode("utf-8"), keep_blank_values = 1)
         
         print(postvars.get("taskName")) 
+        
+
+        connection = connect(constants.CONNECTION_STRING.value)
+        print(dir(connection))
+        
+
         return self.do_GET()
 
 
