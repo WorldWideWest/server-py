@@ -2,7 +2,9 @@ from http.server import SimpleHTTPRequestHandler
 from socketserver import TCPServer
 from urllib.parse import parse_qs
 
-import os
+from constants import Constants
+
+constants = Constants
 
 class RequestHandler(SimpleHTTPRequestHandler):
 
@@ -12,15 +14,15 @@ class RequestHandler(SimpleHTTPRequestHandler):
     
     def do_POST(self):
         length = int(self.headers.get('Content-Length'))
-        postvars = parse_qs(self.rfile.read(length), keep_blank_values=1)
-        print(postvars)
+        postvars = parse_qs(self.rfile.read(length).decode("utf-8"), keep_blank_values = 1)
+        
+        print(postvars.get("taskName")) 
         return self.do_GET()
 
 
-hostName, PORT = "localhost", 8001
 handler = RequestHandler
 
-server = TCPServer((hostName, PORT), handler)
-print(f"Server is running: http://{ hostName }:{ PORT }")
+server = TCPServer((constants.HOST_NAME.value, constants.PORT.value), handler)
+print(f"Server is running: http://{ constants.HOST_NAME.value }:{ constants.PORT.value }")
 server.serve_forever()
 
