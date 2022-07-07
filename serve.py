@@ -16,12 +16,24 @@ class RequestHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         length = int(self.headers.get('Content-Length'))
         postvars = parse_qs(self.rfile.read(length).decode("utf-8"), keep_blank_values = 1)
+        task =  postvars.get("taskName")       
         
-        print(postvars.get("taskName")) 
+        # Instanciating the connection between the server and the DB
+        connection = connect(constants.CONNECTION_STRING.value)
+        cursor = connection.cursor()
+
+        # Checking if the table exists
+        # Export this method to the constructor
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS Tasks(
+                id INT PRIMARY KEY,
+                name VARCHAR(200))")
+
+        cursor.execute(f"INSERT INTO Tasks VALUES ({ task })")
+
         
 
-        connection = connect(constants.CONNECTION_STRING.value)
-        print(dir(connection))
+
+        
         
 
         return self.do_GET()
